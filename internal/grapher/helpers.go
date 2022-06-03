@@ -2,22 +2,25 @@ package grapher
 
 import (
 	"fmt"
+	"html"
+	"time"
 )
 
-func RenderTable(name string, duration StartupDuration, keys []StartupTag) string {
+func RenderTable(name string, duration time.Duration, keys []StartupTag) string {
+	name = html.EscapeString(name)
 	body := fmt.Sprintf(`
 		<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
 		<TR><TD>Step</TD><TD>%s</TD></TR>
 		<TR><TD>Dur</TD><TD>%v</TD></TR>`, name, duration)
 
 	for _, t := range keys {
-		// for k, v := range t {
-		tagLine := fmt.Sprintf("<TR><TD>TagKey: %s</TD><TD>TagValue: %s</TD></TR>", t.Key, t.Value)
+		key := html.EscapeString(t.Key)
+		value := html.EscapeString(t.Value)
+		tagLine := fmt.Sprintf("\n<TR><TD>TagKey: %s</TD><TD>TagValue: %s</TD></TR>", key, value)
 		body = body + tagLine
-		// }
 	}
 
-	body = body + "</TABLE>"
+	body = body + "\n</TABLE>"
 
 	return body
 }

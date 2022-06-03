@@ -58,6 +58,7 @@ func (sd *StartupDuration) UnmarshalJSON(data []byte) error {
 
 	durationString = strings.Replace(durationString, "PT", "", 1)
 	durationString = strings.Replace(durationString, "S", "s", 1)
+	durationString = strings.Replace(durationString, "M", "m", 1)
 	duration, err := time.ParseDuration(durationString)
 	if err != nil {
 		return err
