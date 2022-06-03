@@ -101,7 +101,7 @@ func (g *Grapher) Generate() error {
 	//
 	// This ensures that we will render nodes that have children that would be rendered even if the parent would not otherwise be rendered.
 	for _, node := range nodes {
-		if node.event.Duration.Duration.Seconds() > g.filterDuration.Seconds() {
+		if node.event.Duration.Duration > g.filterDuration {
 			markParentsRecursive(&node)
 		}
 	}
@@ -121,7 +121,7 @@ func (g *Grapher) Generate() error {
 				return err
 			}
 			n.SetFillColor(bgColor)
-			n.SetLabel(g.graph.StrdupHTML(RenderTable(node.event.StartupStep.Name, node.event.Duration, node.event.StartupStep.Tags)))
+			n.SetLabel(g.graph.StrdupHTML(RenderTable(node.event.StartupStep.Name, node.event.Duration.Duration, node.event.StartupStep.Tags)))
 			if err != nil {
 				return err
 			}
@@ -153,6 +153,13 @@ func (g *Grapher) RenderDOT() (bytes.Buffer, error) {
 
 func (g *Grapher) RenderSVGFile(filepath string) error {
 	if err := g.gviz.RenderFilename(g.graph, graphviz.SVG, filepath); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g *Grapher) RenderPNGFile(filepath string) error {
+	if err := g.gviz.RenderFilename(g.graph, graphviz.PNG, filepath); err != nil {
 		return err
 	}
 	return nil
